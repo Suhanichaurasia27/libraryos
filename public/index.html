@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>LibraryOS – Fee Management Dashboard</title>
+<meta name="description" content="Library fee management system – manage students, payments, reminders and reports."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<script>
+  // Auth guard – redirect to auth page if not logged in
+  (function(){
+    if (!localStorage.getItem('los_token')) {
+      location.href = '/auth.html';
+    }
+  })();
+</script>
+</head>
+<body>
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <span class="logo-icon">📚</span>
+    <span class="logo-text">LibraryOS</span>
+  </div>
+  <div style="padding:.5rem 1rem 0;font-size:.75rem;color:#818cf8;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="sidebar-lib-name"></div>
+  <nav class="sidebar-nav">
+    <a class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')">
+      <span class="nav-icon">🏠</span><span>Dashboard</span>
+    </a>
+    <a class="nav-item" data-page="students" onclick="showPage('students')">
+      <span class="nav-icon">👥</span><span>Students</span>
+    </a>
+    <a class="nav-item" data-page="payments" onclick="showPage('payments')">
+      <span class="nav-icon">💰</span><span>Payments</span>
+    </a>
+    <a class="nav-item" data-page="reminders" onclick="showPage('reminders')">
+      <span class="nav-icon">🔔</span><span>Reminders</span>
+    </a>
+    <a class="nav-item" data-page="reports" onclick="showPage('reports')">
+      <span class="nav-icon">📊</span><span>Reports</span>
+    </a>
+    <a class="nav-item" data-page="settings" onclick="showPage('settings')">
+      <span class="nav-icon">⚙️</span><span>Settings</span>
+    </a>
+  </nav>
+  <div class="sidebar-footer" style="flex-direction:column;align-items:flex-start;gap:.5rem">
+    <div style="display:flex;align-items:center;gap:.5rem">
+      <span id="server-status" class="status-dot offline"></span>
+      <span id="server-status-text">Connecting…</span>
+    </div>
+    <button onclick="doLogout()" style="background:transparent;border:1px solid rgba(255,255,255,.1);color:#64748b;font-size:.75rem;padding:.3rem .7rem;border-radius:6px;cursor:pointer;width:100%;text-align:left;transition:all .2s" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#64748b'">🚪 Logout</button>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-title" id="page-title">Dashboard</div>
+    <div class="topbar-right" style="display:flex;align-items:center;gap:1rem">
+      <span id="current-month-label" class="month-label"></span>
+      <a href="/landing.html" style="font-size:.75rem;color:#475569;text-decoration:none" title="Back to home">🏠 Home</a>
+    </div>
+  </header>
+
+  <!-- Dashboard Page -->
+  <section id="page-dashboard" class="page active">
+    <div class="stats-grid">
+      <div class="stat-card accent-blue">
+        <div class="stat-label">Total Students</div>
+        <div class="stat-value" id="stat-total">—</div>
+      </div>
+      <div class="stat-card accent-green">
+        <div class="stat-label">Collected</div>
+        <div class="stat-value" id="stat-collected">—</div>
+      </div>
+      <div class="stat-card accent-red">
+        <div class="stat-label">Outstanding</div>
+        <div class="stat-value" id="stat-due">—</div>
+      </div>
+      <div class="stat-card accent-purple">
+        <div class="stat-label">Collection %</div>
+        <div class="stat-value" id="stat-pct">—</div>
+      </div>
+    </div>
+    <div class="dashboard-row">
+      <div class="card flex-2">
+        <div class="card-header">Fee Status Breakdown</div>
+        <div class="badge-row">
+          <div class="badge green"><span id="badge-paid">0</span> Paid</div>
+          <div class="badge yellow"><span id="badge-partial">0</span> Partial</div>
+          <div class="badge red"><span id="badge-pending">0</span> Pending</div>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+      </div>
+      <div class="card flex-1">
+        <div class="card-header">Quick Actions</div>
+        <button class="btn btn-primary w-full mb-8" onclick="showPage('students'); openAddStudentModal()">+ Add Student</button>
+        <button class="btn btn-secondary w-full mb-8" onclick="showPage('payments')">Record Payment</button>
+        <button class="btn btn-outline w-full" onclick="sendAllReminders()">Send Reminders</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">Defaulters This Month</div>
+      <table class="data-table" id="defaulters-table">
+        <thead><tr><th>Name</th><th>Seat</th><th>Phone</th><th>Due (₹)</th><th>Status</th></tr></thead>
+        <tbody id="defaulters-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Students Page -->
+  <section id="page-students" class="page">
+    <div class="page-toolbar">
+      <input id="student-search" class="search-input" placeholder="Search name, phone, seat…" oninput="loadStudents()"/>
+      <select id="student-filter" class="filter-select" onchange="loadStudents()">
+        <option value="all">All Status</option>
+        <option value="paid">Paid</option>
+        <option value="partial">Partial</option>
+        <option value="pending">Pending</option>
+      </select>
+      <button class="btn btn-primary" onclick="openAddStudentModal()">+ Add Student</button>
+    </div>
+    <div class="card">
+      <table class="data-table" id="students-table">
+        <thead><tr><th>Name</th><th>Seat</th><th>Phone</th><th>Email</th><th>Fee Due</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="students-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Payments Page -->
+  <section id="page-payments" class="page">
+    <div class="page-toolbar">
+      <h3 class="section-subtitle">Recent Payments</h3>
+    </div>
+    <div class="card mb-16">
+      <div class="card-header">Record Payment</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Student</label>
+          <select id="pay-student" class="form-control"></select>
+        </div>
+        <div class="form-group">
+          <label>Amount (₹)</label>
+          <input id="pay-amount" type="number" class="form-control" placeholder="400"/>
+        </div>
+        <div class="form-group">
+          <label>Mode</label>
+          <select id="pay-mode" class="form-control">
+            <option value="cash">Cash</option>
+            <option value="upi">UPI</option>
+            <option value="bank">Bank Transfer</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Note</label>
+          <input id="pay-note" type="text" class="form-control" placeholder="Optional note"/>
+        </div>
+        <div class="form-group align-end">
+          <button class="btn btn-primary" onclick="recordPayment()">Record</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <table class="data-table">
+        <thead><tr><th>Student</th><th>Seat</th><th>Month</th><th>Amount</th><th>Mode</th><th>Date</th></tr></thead>
+        <tbody id="payments-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Reminders Page -->
+  <section id="page-reminders" class="page">
+    <div class="card mb-16">
+      <div class="card-header">Send Email Reminders</div>
+      <p class="text-muted mb-16">Send reminder emails to all students with pending or partial fees.</p>
+      <button class="btn btn-primary" id="send-all-btn" onclick="sendAllReminders()">📧 Send to All Pending</button>
+      <div id="reminder-result" class="alert mt-16 hidden"></div>
+    </div>
+    <div class="card">
+      <div class="card-header">Reminder Log</div>
+      <table class="data-table">
+        <thead><tr><th>Student</th><th>Channel</th><th>Status</th><th>Wave</th><th>Sent At</th></tr></thead>
+        <tbody id="reminder-log-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Reports Page -->
+  <section id="page-reports" class="page">
+    <div class="page-toolbar">
+      <input id="export-month" type="month" class="form-control" style="width:180px"/>
+      <button class="btn btn-primary" onclick="downloadCSV()">⬇ Export CSV</button>
+    </div>
+    <div class="card">
+      <div class="card-header">Monthly Trend</div>
+      <table class="data-table">
+        <thead><tr><th>Month</th><th>Students</th><th>Billed (₹)</th><th>Collected (₹)</th><th>Outstanding (₹)</th></tr></thead>
+        <tbody id="monthly-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Settings Page -->
+  <section id="page-settings" class="page">
+    <div class="card" style="max-width:560px">
+      <div class="card-header">Library Settings</div>
+      <div class="form-group mb-12">
+        <label>Library Name</label>
+        <input id="s-library-name" type="text" class="form-control"/>
+      </div>
+      <div class="form-group mb-12">
+        <label>Default Monthly Fee (₹)</label>
+        <input id="s-monthly-fee" type="number" class="form-control"/>
+      </div>
+      <div class="form-group mb-12">
+        <label>Late Fee %</label>
+        <input id="s-late-fee" type="number" class="form-control"/>
+      </div>
+      <div class="form-group mb-12">
+        <label>Email Reminders</label>
+        <select id="s-enable-email" class="form-control">
+          <option value="true">Enabled</option>
+          <option value="false">Disabled</option>
+        </select>
+      </div>
+      <div class="form-group mb-12">
+        <label>Reminder Days (comma separated)</label>
+        <input id="s-reminder-days" type="text" class="form-control" placeholder="25,28"/>
+      </div>
+      <div class="form-group mb-16">
+        <label>Email Message Template</label>
+        <textarea id="s-msg-template" class="form-control" rows="4"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+      <div id="settings-result" class="alert mt-12 hidden"></div>
+    </div>
+  </section>
+</main>
+
+<!-- Add/Edit Student Modal -->
+<div id="student-modal" class="modal-overlay hidden">
+  <div class="modal">
+    <div class="modal-header">
+      <span id="modal-title">Add Student</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="form-group mb-12">
+      <label>Name *</label>
+      <input id="m-name" type="text" class="form-control"/>
+    </div>
+    <div class="form-group mb-12">
+      <label>Phone *</label>
+      <input id="m-phone" type="text" class="form-control"/>
+    </div>
+    <div class="form-group mb-12">
+      <label>Email</label>
+      <input id="m-email" type="email" class="form-control"/>
+    </div>
+    <div class="form-group mb-12">
+      <label>Seat *</label>
+      <input id="m-seat" type="text" class="form-control"/>
+    </div>
+    <div class="form-group mb-16">
+      <label>Monthly Fee (₹)</label>
+      <input id="m-fee" type="number" class="form-control" placeholder="400"/>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveStudent()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

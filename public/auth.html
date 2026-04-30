@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>LibraryOS – Sign In / Register</title>
+<meta name="description" content="Sign in or register your library on LibraryOS."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#050816;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;overflow-x:hidden}
+.orb{position:fixed;border-radius:50%;filter:blur(120px);opacity:.35;pointer-events:none}
+.orb-1{width:500px;height:500px;background:radial-gradient(circle,#6c3fff,transparent);top:-150px;left:-100px}
+.orb-2{width:400px;height:400px;background:radial-gradient(circle,#1e40af,transparent);bottom:-100px;right:-100px}
+
+.logo{font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:2rem;text-decoration:none;display:flex;align-items:center;gap:.5rem}
+.logo span{background:linear-gradient(135deg,#818cf8,#6c3fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+.card{position:relative;z-index:1;background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:2.5rem;width:100%;max-width:440px;backdrop-filter:blur(20px)}
+.card-title{font-size:1.6rem;font-weight:800;margin-bottom:.4rem}
+.card-sub{color:#64748b;font-size:.9rem;margin-bottom:2rem}
+
+/* Tabs */
+.tabs{display:flex;background:rgba(255,255,255,.05);border-radius:10px;padding:4px;margin-bottom:1.5rem;gap:4px}
+.tab{flex:1;text-align:center;padding:.6rem;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;color:#64748b;transition:all .2s;border:none;background:transparent}
+.tab.active{background:linear-gradient(135deg,#6c3fff,#818cf8);color:#fff}
+
+/* Demo banner */
+.demo-banner{background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(5,150,105,.1));border:1px solid rgba(16,185,129,.3);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:.8rem}
+.demo-icon{font-size:1.4rem}
+.demo-text{flex:1}
+.demo-text strong{display:block;font-size:.9rem;color:#10b981;margin-bottom:.1rem}
+.demo-text span{font-size:.8rem;color:#64748b}
+.demo-fill-btn{background:rgba(16,185,129,.2);border:1px solid rgba(16,185,129,.4);color:#10b981;font-size:.8rem;font-weight:600;padding:.4rem .8rem;border-radius:8px;cursor:pointer;white-space:nowrap;transition:background .2s}
+.demo-fill-btn:hover{background:rgba(16,185,129,.3)}
+
+/* Form */
+.form-group{margin-bottom:1.2rem}
+label{display:block;font-size:.85rem;font-weight:600;color:#94a3b8;margin-bottom:.4rem}
+input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.75rem 1rem;color:#f1f5f9;font-size:.95rem;font-family:'Inter',sans-serif;transition:border-color .2s,box-shadow .2s;outline:none}
+input::placeholder{color:#475569}
+input:focus{border-color:#6c3fff;box-shadow:0 0 0 3px rgba(108,63,255,.2)}
+input.error{border-color:#ef4444}
+
+.submit-btn{width:100%;background:linear-gradient(135deg,#6c3fff,#818cf8);border:none;color:#fff;font-size:1rem;font-weight:700;padding:.85rem;border-radius:12px;cursor:pointer;margin-top:.5rem;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.submit-btn:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(108,63,255,.4)}
+.submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+.error-msg{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;border-radius:10px;padding:.75rem 1rem;font-size:.85rem;margin-bottom:1rem;display:none}
+.success-msg{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:#6ee7b7;border-radius:10px;padding:.75rem 1rem;font-size:.85rem;margin-bottom:1rem;display:none}
+
+.divider{display:flex;align-items:center;gap:1rem;margin:1.2rem 0;color:#334155;font-size:.8rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#1e293b}
+
+.back-link{text-align:center;margin-top:1.5rem;font-size:.85rem;color:#64748b}
+.back-link a{color:#818cf8;text-decoration:none;font-weight:600}
+.back-link a:hover{text-decoration:underline}
+
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<a href="/landing.html" class="logo">📚 <span>LibraryOS</span></a>
+
+<div class="card">
+  <div class="tabs">
+    <button class="tab" id="tab-login" onclick="switchTab('login')">Sign In</button>
+    <button class="tab" id="tab-register" onclick="switchTab('register')">Register Library</button>
+  </div>
+
+  <!-- Demo Banner -->
+  <div class="demo-banner" id="demo-banner">
+    <div class="demo-icon">⚡</div>
+    <div class="demo-text">
+      <strong>Try the Live Demo</strong>
+      <span>Pre-filled with 10 sample students — no signup needed</span>
+    </div>
+    <button class="demo-fill-btn" onclick="fillDemo()">Fill Demo</button>
+  </div>
+
+  <div id="err" class="error-msg"></div>
+  <div id="suc" class="success-msg"></div>
+
+  <!-- Login Form -->
+  <form id="login-form" onsubmit="doLogin(event)">
+    <div class="card-title">Welcome back</div>
+    <div class="card-sub">Sign in to your library dashboard</div>
+    <div class="form-group">
+      <label for="l-email">Email Address</label>
+      <input type="email" id="l-email" placeholder="you@example.com" required/>
+    </div>
+    <div class="form-group">
+      <label for="l-pass">Password</label>
+      <input type="password" id="l-pass" placeholder="••••••••" required/>
+    </div>
+    <button type="submit" class="submit-btn" id="login-btn">
+      Sign In →
+    </button>
+  </form>
+
+  <!-- Register Form -->
+  <form id="register-form" onsubmit="doRegister(event)" style="display:none">
+    <div class="card-title">Register Your Library</div>
+    <div class="card-sub">Start managing your library in 30 seconds</div>
+    <div class="form-group">
+      <label for="r-library">Library Name</label>
+      <input type="text" id="r-library" placeholder="e.g. City Study Library" required/>
+    </div>
+    <div class="form-group">
+      <label for="r-owner">Your Name</label>
+      <input type="text" id="r-owner" placeholder="e.g. Rahul Sharma" required/>
+    </div>
+    <div class="form-group">
+      <label for="r-email">Email Address</label>
+      <input type="email" id="r-email" placeholder="you@example.com" required/>
+    </div>
+    <div class="form-group">
+      <label for="r-pass">Password <span style="color:#475569;font-weight:400">(min 6 chars)</span></label>
+      <input type="password" id="r-pass" placeholder="Choose a strong password" required/>
+    </div>
+    <button type="submit" class="submit-btn" id="register-btn">
+      Create My Library →
+    </button>
+  </form>
+
+  <div class="back-link">
+    <a href="/landing.html">← Back to Home</a>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+
+// Auto-switch tab from URL param
+if (params.get('mode') === 'register') switchTab('register');
+else switchTab('login');
+
+// Auto-fill demo from URL param
+if (params.get('demo') === '1') { switchTab('login'); fillDemo(); }
+
+function switchTab(tab) {
+  document.getElementById('login-form').style.display    = tab === 'login' ? '' : 'none';
+  document.getElementById('register-form').style.display = tab === 'register' ? '' : 'none';
+  document.getElementById('tab-login').classList.toggle('active',    tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  document.getElementById('demo-banner').style.display = tab === 'login' ? '' : 'none';
+  clearMsgs();
+}
+
+function fillDemo() {
+  document.getElementById('l-email').value = 'demo@libraryos.com';
+  document.getElementById('l-pass').value  = 'demo1234';
+  showSuccess('Demo credentials filled! Click "Sign In" to explore the dashboard.');
+}
+
+function clearMsgs() {
+  const e = document.getElementById('err'); e.style.display='none'; e.textContent='';
+  const s = document.getElementById('suc'); s.style.display='none'; s.textContent='';
+}
+function showError(msg)   { const e=document.getElementById('err'); e.textContent=msg; e.style.display='block'; }
+function showSuccess(msg) { const s=document.getElementById('suc'); s.textContent=msg; s.style.display='block'; }
+
+function setLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  if (loading) {
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Please wait...';
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = btnId === 'login-btn' ? 'Sign In →' : 'Create My Library →';
+  }
+}
+
+async function doLogin(e) {
+  e.preventDefault();
+  clearMsgs();
+  setLoading('login-btn', true);
+  try {
+    const res  = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email:    document.getElementById('l-email').value,
+        password: document.getElementById('l-pass').value
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) { showError(data.error || 'Login failed'); return; }
+
+    localStorage.setItem('los_token',       data.token);
+    localStorage.setItem('los_libraryName', data.libraryName);
+    localStorage.setItem('los_ownerName',   data.ownerName || '');
+    showSuccess('Login successful! Redirecting to dashboard...');
+    setTimeout(() => location.href = '/index.html', 800);
+  } catch {
+    showError('Network error. Is the server running?');
+  } finally {
+    setLoading('login-btn', false);
+  }
+}
+
+async function doRegister(e) {
+  e.preventDefault();
+  clearMsgs();
+  setLoading('register-btn', true);
+  try {
+    const res  = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        library_name: document.getElementById('r-library').value,
+        owner_name:   document.getElementById('r-owner').value,
+        email:        document.getElementById('r-email').value,
+        password:     document.getElementById('r-pass').value
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) { showError(data.error || 'Registration failed'); return; }
+
+    localStorage.setItem('los_token',       data.token);
+    localStorage.setItem('los_libraryName', data.libraryName);
+    localStorage.setItem('los_ownerName',   data.ownerName || '');
+    showSuccess('Library created! Redirecting to dashboard...');
+    setTimeout(() => location.href = '/index.html', 800);
+  } catch {
+    showError('Network error. Is the server running?');
+  } finally {
+    setLoading('register-btn', false);
+  }
+}
+
+// If already logged in, go straight to dashboard
+if (localStorage.getItem('los_token') && !params.get('demo')) {
+  location.href = '/index.html';
+}
+</script>
+</body>
+</html>

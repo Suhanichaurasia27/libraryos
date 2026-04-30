@@ -1,0 +1,126 @@
+/* ── Reset & Base ─────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{font-family:'Inter',sans-serif;background:#0f1117;color:#e2e8f0;display:flex;min-height:100vh;overflow-x:hidden}
+
+/* ── Sidebar ──────────────────────────────────────── */
+.sidebar{width:220px;min-height:100vh;background:#161b27;border-right:1px solid #1e2535;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
+.sidebar-logo{display:flex;align-items:center;gap:10px;padding:24px 20px;border-bottom:1px solid #1e2535}
+.logo-icon{font-size:1.5rem}
+.logo-text{font-weight:800;font-size:1.1rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sidebar-nav{flex:1;padding:16px 12px;display:flex;flex-direction:column;gap:4px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;cursor:pointer;color:#94a3b8;font-size:.9rem;font-weight:500;text-decoration:none;transition:all .2s}
+.nav-item:hover{background:#1e2535;color:#e2e8f0}
+.nav-item.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 4px 15px rgba(99,102,241,.3)}
+.nav-icon{font-size:1.1rem;width:20px;text-align:center}
+.sidebar-footer{padding:16px 20px;border-top:1px solid #1e2535;display:flex;align-items:center;gap:8px;font-size:.8rem;color:#64748b}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#ef4444;flex-shrink:0;transition:background .3s}
+.status-dot.online{background:#22c55e;box-shadow:0 0 6px #22c55e}
+
+/* ── Main ─────────────────────────────────────────── */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{padding:20px 28px;border-bottom:1px solid #1e2535;display:flex;align-items:center;justify-content:space-between;background:#0f1117;position:sticky;top:0;z-index:50}
+.topbar-title{font-size:1.25rem;font-weight:700}
+.month-label{font-size:.85rem;color:#64748b;background:#1e2535;padding:4px 12px;border-radius:20px}
+
+/* ── Pages ────────────────────────────────────────── */
+.page{display:none;padding:24px 28px;flex-direction:column;gap:20px}
+.page.active{display:flex}
+
+/* ── Stats Grid ───────────────────────────────────── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.stat-card{border-radius:14px;padding:20px 22px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;opacity:.15}
+.stat-label{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;opacity:.75;margin-bottom:8px}
+.stat-value{font-size:1.8rem;font-weight:800}
+.accent-blue{background:linear-gradient(135deg,#1e40af22,#3b82f622);border:1px solid #3b82f633;color:#93c5fd}
+.accent-blue .stat-value{color:#60a5fa}
+.accent-green{background:linear-gradient(135deg,#14532d22,#22c55e22);border:1px solid #22c55e33;color:#86efac}
+.accent-green .stat-value{color:#4ade80}
+.accent-red{background:linear-gradient(135deg,#7f1d1d22,#ef444422);border:1px solid #ef444433;color:#fca5a5}
+.accent-red .stat-value{color:#f87171}
+.accent-purple{background:linear-gradient(135deg,#4c1d9522,#8b5cf622);border:1px solid #8b5cf633;color:#c4b5fd}
+.accent-purple .stat-value{color:#a78bfa}
+
+/* ── Card ─────────────────────────────────────────── */
+.card{background:#161b27;border:1px solid #1e2535;border-radius:14px;padding:20px 22px}
+.card-header{font-size:1rem;font-weight:700;margin-bottom:16px;color:#e2e8f0}
+.dashboard-row{display:flex;gap:16px}
+.flex-1{flex:1}.flex-2{flex:2}
+.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}
+
+/* ── Badges ───────────────────────────────────────── */
+.badge-row{display:flex;gap:10px;margin-bottom:14px}
+.badge{padding:6px 14px;border-radius:20px;font-size:.85rem;font-weight:600}
+.badge.green{background:#14532d33;color:#4ade80;border:1px solid #22c55e44}
+.badge.yellow{background:#78350f33;color:#fbbf24;border:1px solid #f59e0b44}
+.badge.red{background:#7f1d1d33;color:#f87171;border:1px solid #ef444444}
+
+/* ── Progress Bar ─────────────────────────────────── */
+.progress-bar-wrap{background:#1e2535;border-radius:999px;height:10px;overflow:hidden}
+.progress-bar{height:100%;border-radius:999px;background:linear-gradient(90deg,#6366f1,#22c55e);transition:width .6s ease}
+
+/* ── Table ────────────────────────────────────────── */
+.data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+.data-table th{text-align:left;padding:10px 12px;color:#64748b;font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #1e2535}
+.data-table td{padding:11px 12px;border-bottom:1px solid #1a2030;vertical-align:middle}
+.data-table tbody tr:hover{background:#1a2030}
+.data-table tbody tr:last-child td{border-bottom:none}
+
+/* ── Status Pills ─────────────────────────────────── */
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+.pill-paid{background:#14532d33;color:#4ade80}
+.pill-partial{background:#78350f33;color:#fbbf24}
+.pill-pending{background:#7f1d1d33;color:#f87171}
+
+/* ── Toolbar ──────────────────────────────────────── */
+.page-toolbar{display:flex;align-items:center;gap:12px}
+.section-subtitle{font-size:1rem;font-weight:700}
+.search-input,.filter-select,.form-control{background:#1e2535;border:1px solid #2d3748;color:#e2e8f0;border-radius:8px;padding:8px 12px;font-size:.875rem;outline:none;font-family:'Inter',sans-serif}
+.search-input{flex:1;max-width:320px}
+.search-input:focus,.filter-select:focus,.form-control:focus{border-color:#6366f1}
+select.form-control option{background:#1e2535}
+textarea.form-control{resize:vertical}
+
+/* ── Buttons ──────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:.875rem;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all .2s}
+.btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 4px 12px rgba(99,102,241,.3)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(99,102,241,.4)}
+.btn-secondary{background:#1e2535;color:#e2e8f0;border:1px solid #2d3748}
+.btn-secondary:hover{background:#2d3748}
+.btn-outline{background:transparent;color:#94a3b8;border:1px solid #2d3748}
+.btn-outline:hover{background:#1e2535;color:#e2e8f0}
+.btn-danger{background:#7f1d1d33;color:#f87171;border:1px solid #ef444433}
+.btn-danger:hover{background:#7f1d1d55}
+.btn-sm{padding:5px 10px;font-size:.78rem}
+.w-full{width:100%}
+
+/* ── Form ─────────────────────────────────────────── */
+.form-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.form-group{display:flex;flex-direction:column;gap:6px;flex:1;min-width:140px}
+.form-group label{font-size:.8rem;font-weight:600;color:#94a3b8}
+.align-end{justify-content:flex-end}
+
+/* ── Modal ────────────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:#000000aa;backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:200}
+.modal-overlay.hidden{display:none}
+.modal{background:#161b27;border:1px solid #2d3748;border-radius:16px;padding:28px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;font-size:1.1rem;font-weight:700}
+.modal-close{background:none;border:none;color:#64748b;cursor:pointer;font-size:1.2rem;line-height:1}
+.modal-close:hover{color:#e2e8f0}
+.modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:4px}
+
+/* ── Alert ────────────────────────────────────────── */
+.alert{padding:12px 16px;border-radius:8px;font-size:.875rem;font-weight:500}
+.alert.success{background:#14532d33;color:#4ade80;border:1px solid #22c55e44}
+.alert.error{background:#7f1d1d33;color:#f87171;border:1px solid #ef444444}
+.hidden{display:none!important}
+
+/* ── Toast ────────────────────────────────────────── */
+.toast{position:fixed;bottom:28px;right:28px;background:#1e2535;color:#e2e8f0;border:1px solid #2d3748;border-radius:10px;padding:12px 20px;font-size:.875rem;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:999;animation:slideUp .3s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.text-muted{color:#64748b;font-size:.875rem}
+.mt-16{margin-top:16px}
+
+/* ── Action Buttons in Table ──────────────────────── */
+.actions{display:flex;gap:6px}

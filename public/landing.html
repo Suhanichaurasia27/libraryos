@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>LibraryOS – Fee Management SaaS for Libraries</title>
+<meta name="description" content="LibraryOS helps library owners manage students, track fees, and send email reminders automatically. Free to get started."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:#050816;color:#e2e8f0;overflow-x:hidden}
+
+/* ── Gradient orbs ── */
+.orb{position:fixed;border-radius:50%;filter:blur(120px);opacity:.35;pointer-events:none;z-index:0}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,#6c3fff,transparent);top:-200px;left:-100px}
+.orb-2{width:500px;height:500px;background:radial-gradient(circle,#1e40af,transparent);bottom:-100px;right:-100px}
+.orb-3{width:400px;height:400px;background:radial-gradient(circle,#7c3aed,transparent);top:50%;right:10%}
+
+/* ── Nav ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 3rem;backdrop-filter:blur(20px);background:rgba(5,8,22,.7);border-bottom:1px solid rgba(255,255,255,.07)}
+.nav-logo{display:flex;align-items:center;gap:.6rem;font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none}
+.nav-logo span{background:linear-gradient(135deg,#818cf8,#6c3fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:.5rem}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.3rem;border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.15);color:#e2e8f0}
+.btn-ghost:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.3)}
+.btn-primary{background:linear-gradient(135deg,#6c3fff,#818cf8);border:none;color:#fff;box-shadow:0 4px 20px rgba(108,63,255,.4)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(108,63,255,.5)}
+.btn-lg{padding:.85rem 2rem;font-size:1rem;border-radius:12px}
+.btn-demo{background:linear-gradient(135deg,#059669,#10b981);border:none;color:#fff;box-shadow:0 4px 20px rgba(16,185,129,.3)}
+.btn-demo:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(16,185,129,.4)}
+
+/* ── Hero ── */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6rem 2rem 4rem}
+.badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(108,63,255,.15);border:1px solid rgba(108,63,255,.4);color:#a78bfa;padding:.4rem 1rem;border-radius:50px;font-size:.8rem;font-weight:600;margin-bottom:2rem;letter-spacing:.04em}
+.badge-dot{width:6px;height:6px;background:#a78bfa;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-size:clamp(2.5rem,6vw,5rem);font-weight:900;line-height:1.1;max-width:900px;margin-bottom:1.5rem}
+.hero h1 .grad{background:linear-gradient(135deg,#818cf8 0%,#a78bfa 50%,#6c3fff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:1.15rem;color:#94a3b8;max-width:600px;line-height:1.7;margin-bottom:2.5rem}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:4rem}
+.hero-note{font-size:.8rem;color:#64748b}
+
+/* ── Stats ── */
+.stats{display:flex;gap:3rem;justify-content:center;flex-wrap:wrap;margin-bottom:2rem;position:relative;z-index:1}
+.stat{text-align:center}
+.stat-num{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#818cf8,#6c3fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{font-size:.8rem;color:#64748b;margin-top:.2rem}
+
+/* ── Dashboard preview ── */
+.preview-section{position:relative;z-index:1;padding:4rem 2rem;text-align:center}
+.preview-wrapper{position:relative;max-width:1000px;margin:0 auto;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:0 40px 100px rgba(0,0,0,.6)}
+.preview-bar{background:rgba(255,255,255,.06);padding:.8rem 1.2rem;display:flex;align-items:center;gap:.5rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.preview-dot{width:10px;height:10px;border-radius:50%}
+.preview-dot.r{background:#ef4444}.preview-dot.y{background:#f59e0b}.preview-dot.g{background:#10b981}
+.preview-url{background:rgba(255,255,255,.08);border-radius:6px;padding:.25rem 1rem;font-size:.75rem;color:#64748b;flex:1;text-align:center}
+.preview-img{width:100%;display:block;background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 100%)}
+
+/* ── Features ── */
+.features{position:relative;z-index:1;padding:5rem 2rem;max-width:1100px;margin:0 auto}
+.section-label{text-align:center;font-size:.8rem;font-weight:700;letter-spacing:.1em;color:#818cf8;text-transform:uppercase;margin-bottom:1rem}
+.section-title{text-align:center;font-size:clamp(1.8rem,3vw,2.8rem);font-weight:800;margin-bottom:1rem}
+.section-sub{text-align:center;color:#64748b;font-size:1rem;margin-bottom:3.5rem}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.feature-card{background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.01));border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:1.8rem;transition:transform .2s,border-color .2s}
+.feature-card:hover{transform:translateY(-4px);border-color:rgba(108,63,255,.4)}
+.feature-icon{font-size:2rem;margin-bottom:1rem}
+.feature-card h3{font-size:1.1rem;font-weight:700;margin-bottom:.5rem}
+.feature-card p{font-size:.9rem;color:#64748b;line-height:1.6}
+
+/* ── How it works ── */
+.how{position:relative;z-index:1;padding:5rem 2rem;max-width:800px;margin:0 auto;text-align:center}
+.steps{display:flex;flex-direction:column;gap:2rem;margin-top:3rem;text-align:left}
+.step{display:flex;gap:1.5rem;align-items:flex-start}
+.step-num{flex-shrink:0;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#6c3fff,#818cf8);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem}
+.step-content h4{font-weight:700;margin-bottom:.3rem}
+.step-content p{color:#64748b;font-size:.9rem;line-height:1.6}
+
+/* ── CTA ── */
+.cta{position:relative;z-index:1;text-align:center;padding:5rem 2rem;margin:2rem auto;max-width:700px}
+.cta-box{background:linear-gradient(135deg,rgba(108,63,255,.15),rgba(129,140,248,.08));border:1px solid rgba(108,63,255,.3);border-radius:24px;padding:3.5rem 2rem}
+.cta-box h2{font-size:clamp(1.8rem,3vw,2.5rem);font-weight:800;margin-bottom:1rem}
+.cta-box p{color:#94a3b8;margin-bottom:2rem;line-height:1.6}
+.cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+
+/* ── Footer ── */
+footer{position:relative;z-index:1;text-align:center;padding:2rem;border-top:1px solid rgba(255,255,255,.06);color:#475569;font-size:.85rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+
+<!-- Background orbs -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- Nav -->
+<nav>
+  <a href="/" class="nav-logo">📚 <span>LibraryOS</span></a>
+  <div class="nav-links">
+    <a href="/auth.html?mode=login" class="btn btn-ghost">Sign In</a>
+    <a href="/auth.html?mode=register" class="btn btn-primary">Get Started Free</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="badge"><span class="badge-dot"></span> 100% Free to Start — No Credit Card</div>
+  <h1>Manage Your Library's Fees<br/><span class="grad">Like a Pro</span></h1>
+  <p>LibraryOS is a complete fee management system for library owners. Track students, collect payments, and send automatic email reminders — all from one beautiful dashboard.</p>
+  <div class="hero-btns">
+    <a href="/auth.html?demo=1" class="btn btn-demo btn-lg">⚡ Try Live Demo</a>
+    <a href="/auth.html?mode=register" class="btn btn-primary btn-lg">🚀 Register Your Library</a>
+  </div>
+  <p class="hero-note">demo@libraryos.com · demo1234 · No signup needed</p>
+</section>
+
+<!-- Stats -->
+<div class="stats">
+  <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Students Supported</div></div>
+  <div class="stat"><div class="stat-num">₹0</div><div class="stat-label">Cost to Start</div></div>
+  <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Data Isolated Per Library</div></div>
+  <div class="stat"><div class="stat-num">Auto</div><div class="stat-label">Email Reminders</div></div>
+</div>
+
+<!-- Dashboard Preview -->
+<section class="preview-section">
+  <div class="preview-wrapper">
+    <div class="preview-bar">
+      <div class="preview-dot r"></div>
+      <div class="preview-dot y"></div>
+      <div class="preview-dot g"></div>
+      <div class="preview-url">https://libraryos.onrender.com/app</div>
+    </div>
+    <div class="preview-img" style="height:420px;display:flex;align-items:center;justify-content:center;">
+      <!-- Inline SVG preview of the dashboard -->
+      <svg width="900" height="380" viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" style="max-width:100%">
+        <!-- Sidebar -->
+        <rect width="160" height="380" fill="#0d1117"/>
+        <rect x="10" y="20" width="140" height="36" rx="8" fill="#6c3fff" opacity=".9"/>
+        <text x="50" y="44" fill="#fff" font-size="13" font-family="Inter,sans-serif" font-weight="700">📊 Dashboard</text>
+        <text x="20" y="100" fill="#64748b" font-size="12" font-family="Inter,sans-serif">👨‍🎓 Students</text>
+        <text x="20" y="135" fill="#64748b" font-size="12" font-family="Inter,sans-serif">💰 Payments</text>
+        <text x="20" y="170" fill="#64748b" font-size="12" font-family="Inter,sans-serif">🔔 Reminders</text>
+        <text x="20" y="205" fill="#64748b" font-size="12" font-family="Inter,sans-serif">📈 Reports</text>
+        <text x="20" y="240" fill="#64748b" font-size="12" font-family="Inter,sans-serif">⚙️ Settings</text>
+        <circle cx="20" cy="360" r="5" fill="#10b981"/>
+        <text x="32" y="364" fill="#64748b" font-size="11" font-family="Inter,sans-serif">Online</text>
+        <!-- Main -->
+        <rect x="160" width="740" height="380" fill="#0f172a"/>
+        <text x="180" y="36" fill="#f1f5f9" font-size="18" font-family="Inter,sans-serif" font-weight="800">Dashboard</text>
+        <text x="800" y="36" fill="#64748b" font-size="12" font-family="Inter,sans-serif">April 2026</text>
+        <!-- Stat cards -->
+        <rect x="180" y="55" width="150" height="75" rx="10" fill="#1e293b"/>
+        <text x="196" y="78" fill="#64748b" font-size="10" font-family="Inter,sans-serif">TOTAL STUDENTS</text>
+        <text x="196" y="108" fill="#818cf8" font-size="26" font-family="Inter,sans-serif" font-weight="800">10</text>
+        <rect x="345" y="55" width="155" height="75" rx="10" fill="#1e293b"/>
+        <text x="361" y="78" fill="#64748b" font-size="10" font-family="Inter,sans-serif">COLLECTED</text>
+        <text x="361" y="108" fill="#10b981" font-size="22" font-family="Inter,sans-serif" font-weight="800">₹1,900</text>
+        <rect x="515" y="55" width="155" height="75" rx="10" fill="#1e293b"/>
+        <text x="531" y="78" fill="#64748b" font-size="10" font-family="Inter,sans-serif">OUTSTANDING</text>
+        <text x="531" y="108" fill="#ef4444" font-size="22" font-family="Inter,sans-serif" font-weight="800">₹2,150</text>
+        <rect x="685" y="55" width="155" height="75" rx="10" fill="#1e293b"/>
+        <text x="701" y="78" fill="#64748b" font-size="10" font-family="Inter,sans-serif">COLLECTION %</text>
+        <text x="701" y="108" fill="#f59e0b" font-size="22" font-family="Inter,sans-serif" font-weight="800">47%</text>
+        <!-- Defaulters table -->
+        <rect x="180" y="148" width="530" height="210" rx="10" fill="#1e293b"/>
+        <text x="200" y="174" fill="#f1f5f9" font-size="13" font-family="Inter,sans-serif" font-weight="700">Defaulters This Month</text>
+        <text x="200" y="200" fill="#475569" font-size="10" font-family="Inter,sans-serif">NAME</text>
+        <text x="360" y="200" fill="#475569" font-size="10" font-family="Inter,sans-serif">SEAT</text>
+        <text x="430" y="200" fill="#475569" font-size="10" font-family="Inter,sans-serif">PHONE</text>
+        <text x="570" y="200" fill="#475569" font-size="10" font-family="Inter,sans-serif">STATUS</text>
+        <line x1="196" y1="207" x2="700" y2="207" stroke="#334155" stroke-width="1"/>
+        <text x="200" y="226" fill="#e2e8f0" font-size="11" font-family="Inter,sans-serif">Arjun Sharma</text>
+        <text x="360" y="226" fill="#e2e8f0" font-size="11" font-family="Inter,sans-serif">A-01</text>
+        <text x="430" y="226" fill="#e2e8f0" font-size="11" font-family="Inter,sans-serif">9876543210</text>
+        <rect x="560" y="215" width="52" height="18" rx="5" fill="rgba(239,68,68,.15)"/>
+        <text x="568" y="228" fill="#ef4444" font-size="10" font-family="Inter,sans-serif">pending</text>
+        <text x="200" y="256" fill="#e2e8f0" font-size="11" font-family="Inter,sans-serif">Sneha Gupta</text>
+        <text x="360" y="256" fill="#e2e8f0" font-size="11" font-family="Inter,sans-serif">B-02</text>
+        <text x="430" y="256" fill="#e2e8f0" font-size="11" font-family="Inter,sans-serif">6543210987</text>
+        <rect x="560" y="245" width="52" height="18" rx="5" fill="rgba(239,68,68,.15)"/>
+        <text x="568" y="258" fill="#ef4444" font-size="10" font-family="Inter,sans-serif">pending</text>
+        <text x="200" y="286" fill="#e2e8f0" font-size="11" font-family="Inter,sans-serif">Kavya Patel</text>
+        <text x="360" y="286" fill="#e2e8f0" font-size="11" font-family="Inter,sans-serif">C-02</text>
+        <text x="430" y="286" fill="#e2e8f0" font-size="11" font-family="Inter,sans-serif">9977221144</text>
+        <rect x="558" y="275" width="56" height="18" rx="5" fill="rgba(245,158,11,.15)"/>
+        <text x="566" y="288" fill="#f59e0b" font-size="10" font-family="Inter,sans-serif">partial</text>
+        <!-- Quick actions -->
+        <rect x="725" y="148" width="115" height="45" rx="10" fill="#6c3fff"/>
+        <text x="745" y="176" fill="#fff" font-size="12" font-family="Inter,sans-serif" font-weight="600">+ Add Student</text>
+        <rect x="725" y="200" width="115" height="45" rx="10" fill="#1e293b"/>
+        <text x="733" y="228" fill="#e2e8f0" font-size="11" font-family="Inter,sans-serif">Record Payment</text>
+        <rect x="725" y="252" width="115" height="45" rx="10" fill="#1e293b"/>
+        <text x="735" y="280" fill="#e2e8f0" font-size="11" font-family="Inter,sans-serif">Send Reminders</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features">
+  <p class="section-label">Features</p>
+  <h2 class="section-title">Everything You Need to Run Your Library</h2>
+  <p class="section-sub">Built for Indian library owners. Simple, fast, and complete.</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">👨‍🎓</div>
+      <h3>Student Management</h3>
+      <p>Add, edit, and remove students. Track their seat number, phone, email, and monthly fee. Search and filter instantly.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💰</div>
+      <h3>Fee Tracking</h3>
+      <p>Automatically generates monthly fee records. Track paid, partial, and pending status for every student every month.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📧</div>
+      <h3>Email Reminders</h3>
+      <p>Send automatic reminder emails to students with pending fees. Scheduled on 25th and 28th every month.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Reports & CSV</h3>
+      <p>Monthly summary reports, defaulter lists, collection percentages. Export data as CSV anytime.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔐</div>
+      <h3>Secure & Isolated</h3>
+      <p>Each library owner gets their own account. Your student data is completely private and isolated from others.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚙️</div>
+      <h3>Customizable Settings</h3>
+      <p>Set your library name, monthly fee amount, email credentials, and reminder message template. All per library.</p>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="how">
+  <p class="section-label">How It Works</p>
+  <h2 class="section-title">Up & Running in 2 Minutes</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>Register Your Library</h4>
+        <p>Enter your library name, your name, email, and password. Takes 30 seconds.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>Add Your Students</h4>
+        <p>Add each student with their seat number, phone, and email. Fee records are created automatically every month.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>Track & Collect Payments</h4>
+        <p>As students pay, record their payment. The dashboard shows your collection percentage and who still owes.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h4>Send Reminders Automatically</h4>
+        <p>Connect your Gmail and the app sends reminders every month automatically. No manual work needed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-box">
+    <h2>Ready to Manage Your Library?</h2>
+    <p>Join library owners who use LibraryOS to save hours every month on fee collection and student management.</p>
+    <div class="cta-btns">
+      <a href="/auth.html?demo=1" class="btn btn-demo btn-lg">⚡ Try Demo First</a>
+      <a href="/auth.html?mode=register" class="btn btn-primary btn-lg">🚀 Register Free</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>Built with ❤️ using Node.js, SQLite &amp; Vanilla JS &nbsp;·&nbsp;
+  <a href="/auth.html?mode=login">Sign In</a> &nbsp;·&nbsp;
+  <a href="/auth.html?mode=register">Register</a></p>
+</footer>
+
+<script>
+  // If already logged in, show "Go to Dashboard" in nav
+  const token = localStorage.getItem('los_token');
+  if (token) {
+    const nav = document.querySelector('.nav-links');
+    nav.innerHTML = `
+      <span style="color:#94a3b8;font-size:.9rem;padding:.5rem 1rem;">Signed in</span>
+      <a href="/index.html" class="btn btn-primary">Go to Dashboard →</a>
+    `;
+  }
+</script>
+</body>
+</html>
