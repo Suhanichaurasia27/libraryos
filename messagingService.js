@@ -8,13 +8,13 @@ const db         = require('./database');
 // ── Email transporter ─────────────────────────────────────
 let emailTransporter = null;
 try {
-  if (process.env.EMAIL_USER && process.env.EMAIL_PASS &&
-      !process.env.EMAIL_PASS.includes('your_')) {
+  if (process.env.GMAIL_USER && process.env.GMAIL_PASS &&
+      !process.env.GMAIL_PASS.includes('your_')) {
     emailTransporter = nodemailer.createTransport({
-      host:   process.env.EMAIL_HOST || 'smtp.gmail.com',
-      port:   parseInt(process.env.EMAIL_PORT) || 587,
+      host:   'smtp.gmail.com',
+      port:   587,
       secure: false,
-      auth:   { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+      auth:   { user: process.env.GMAIL_USER, pass: process.env.GMAIL_PASS },
     });
     console.log('✅  Email transporter initialised');
   } else {
@@ -46,7 +46,7 @@ async function sendEmail(student, message, subject) {
   }
 
   const info = await emailTransporter.sendMail({
-    from:    process.env.EMAIL_FROM || `"${libraryName}" <${process.env.EMAIL_USER}>`,
+    from:    `"${libraryName}" <${process.env.GMAIL_USER}>`,
     to:      student.email,
     subject: subject || `Library Fee Reminder – ${new Date().toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}`,
     text:    message,
