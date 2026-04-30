@@ -56,7 +56,7 @@
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/libraryos.git
+git clone https://github.com/suhanichaurasia27/libraryos.git
 cd libraryos
 
 # 2. Install dependencies
