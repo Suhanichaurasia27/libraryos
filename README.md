@@ -17,7 +17,7 @@ This platform solves that problem by providing a multi-tenant dashboard where ea
 
 ## 🌐 Live Demo
 
-**URL:** [https://libraryos.onrender.com](https://libraryos.onrender.com)
+**URL:** [https://libraryos.onrender.com](https://libraryos-3374.onrender.com/landing.html)
 
 | Credential | Value |
 |---|---|
