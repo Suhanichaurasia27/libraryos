@@ -2,6 +2,12 @@
 
 > A full-stack SaaS application for library owners to manage students, track fees, and send automated email reminders.
 
+## 📖 About The Project
+
+LibraryOS is designed specifically for independent library owners and study spaces to streamline their day-to-day operations. Often, library owners track student seats and monthly fee collections manually using spreadsheets or paper registers, which is prone to errors and missed payments. 
+
+This platform solves that problem by providing a multi-tenant dashboard where each library owner gets their own isolated space. From there, they can easily add students, assign seats, track monthly fee payments, generate detailed revenue reports, and most importantly, automate email reminders for students whose fees are pending.
+
 [![Node.js](https://img.shields.io/badge/Node.js-22-green)](https://nodejs.org)
 [![Express](https://img.shields.io/badge/Express-4-blue)](https://expressjs.com)
 [![SQLite](https://img.shields.io/badge/SQLite-better--sqlite3-orange)](https://github.com/WiseLibs/better-sqlite3)
@@ -11,7 +17,7 @@
 
 ## 🌐 Live Demo
 
-**URL:** [https://libraryos.onrender.com](https://libraryos.onrender.com) *(coming soon)*
+**URL:** [https://libraryos.onrender.com](https://libraryos.onrender.com)
 
 | Credential | Value |
 |---|---|
